@@ -23,12 +23,11 @@ const BlogCategorySchema = new mongoose.Schema({
         type: Boolean,
         default: true,
       },
-      childs: [
-        {
+      childs: {
           type: [String],
           ref: "BlogCategory"
         }
-      ] 
+      
       
     },
     { timestamps: true }

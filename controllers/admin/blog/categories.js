@@ -38,7 +38,20 @@ const create = async (req, res, next)=>{
 //all categories  
 const allCategories = async (req, res, next)=>{
     try{
-        const categories = await BlogCategory.find({parentId: null}).populate("childs")
+        const categories = await BlogCategory.find().populate({
+            path: 'childs',
+            populate: {
+                path: 'childs',
+                populate:{
+                    path: 'childs',
+                }
+                // model: 'Playlist',
+                // populate: {
+                //     path: 'videos',
+                //     model: 'Video'
+                // }
+            } 
+        })
         res.status(200).json(categories);
     }
     catch(err){
