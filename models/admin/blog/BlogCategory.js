@@ -17,17 +17,19 @@ const BlogCategorySchema = new mongoose.Schema({
       },
       parentId: {
         type: mongoose.Types.ObjectId,
-        required: true,
-        default: 0,
+        default: null,
       },
       status: {
         type: Boolean,
         default: true,
       },
-      childs: {
-        type: [String],
-        ref: "BlogCategory"
-      },
+      childs: [
+        {
+          type: [String],
+          ref: "BlogCategory"
+        }
+      ] 
+      
     },
     { timestamps: true }
 );
