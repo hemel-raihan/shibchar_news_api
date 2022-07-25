@@ -38,21 +38,40 @@ const create = async (req, res, next)=>{
 //all categories  
 const allCategories = async (req, res, next)=>{
     try{
-        const categories = await BlogCategory.find().populate({
+        // const populateObj = {
+        //     path: "childs",
+
+        //     populate: {
+        //         path: "childs",
+        //         populate:{
+        //             path: "childs",
+        //             populate:{
+        //                 path: "childs"
+        //             }
+        //         }
+        //     },
+        //    };
+        const categories = await BlogCategory.find({parentId: null}).populate({
             path: 'childs',
             populate: {
                 path: 'childs',
                 populate:{
                     path: 'childs',
                 }
-                // model: 'Playlist',
-                // populate: {
-                //     path: 'videos',
-                //     model: 'Video'
-                // }
-            } 
-        })
+            }
+        }).populate('posts')
         res.status(200).json(categories);
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+//details
+const categoryDetails = async (req, res, next)=>{
+    try{
+        const room = await BlogCategory.findById(req.params.id)
+        res.status(200).json(room);
     }
     catch(err){
         next(err)
@@ -61,5 +80,6 @@ const allCategories = async (req, res, next)=>{
 
 module.exports = {
     create,
-    allCategories
+    allCategories,
+    categoryDetails
 }

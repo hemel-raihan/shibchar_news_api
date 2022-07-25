@@ -1,5 +1,5 @@
 const express = require('express');
-const { create, allCategories } = require('../../../controllers/admin/blog/categories');
+const { create, allCategories, categoryDetails } = require('../../../controllers/admin/blog/categories');
 
 const router = express.Router();
 
@@ -8,6 +8,9 @@ router.post('/', create)
 
 //all categories
 router.get('/', allCategories)
+
+//Category Details
+router.get('/:id', categoryDetails)
 
 
 module.exports = router

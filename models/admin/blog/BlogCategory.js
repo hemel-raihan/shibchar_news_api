@@ -24,11 +24,15 @@ const BlogCategorySchema = new mongoose.Schema({
         default: true,
       },
       childs: {
-          type: [String],
+          type: [mongoose.Types.ObjectId],
           ref: "BlogCategory"
+      },
+      posts: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "BlogPost"
         }
-      
-      
+      ]
     },
     { timestamps: true }
 );

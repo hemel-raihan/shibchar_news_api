@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const blogCategoryRoute = require('./routes/admin/blog/categories')
+const blogPostRoute = require('./routes/admin/blog/posts')
 const cors = require('cors')
 
 const app = express()
@@ -21,7 +22,11 @@ mongoose.connect(process.env.MONGO_URL, {
     console.log('connected to the database')
 })
 
+
+//routes middleware
 app.use('/api/blog/categories', blogCategoryRoute)
+app.use('/api/blog/posts', blogPostRoute)
+
 
 //error handler middleware
 app.use((err, req, res, next)=>{
