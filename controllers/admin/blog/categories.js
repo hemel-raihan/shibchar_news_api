@@ -35,8 +35,19 @@ const create = async (req, res, next)=>{
     }
 }
 
-//all categories  
+//all categories 
 const allCategories = async (req, res, next)=>{
+    try{
+        const categories = await BlogCategory.find({status: true})
+        res.status(200).json(categories);
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+//all categories with child  
+const allCategoriesWithChild = async (req, res, next)=>{
     try{
         // const populateObj = {
         //     path: "childs",
@@ -57,6 +68,9 @@ const allCategories = async (req, res, next)=>{
                 path: 'childs',
                 populate:{
                     path: 'childs',
+                    populate:{
+                        path: 'childs',
+                    }
                 }
             }
         }).populate('posts')
@@ -81,5 +95,6 @@ const categoryDetails = async (req, res, next)=>{
 module.exports = {
     create,
     allCategories,
+    allCategoriesWithChild,
     categoryDetails
 }
