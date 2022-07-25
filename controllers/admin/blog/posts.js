@@ -48,5 +48,5 @@ const allPosts = async (req, res, next)=>{
 
 module.exports = {
     createPost,
-    allPosts
+    allPosts,
 }
