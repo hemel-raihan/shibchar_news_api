@@ -10,7 +10,8 @@ const BlogCategorySchema = new mongoose.Schema({
         required: true,
       },
       photo: {
-        type: [String],
+        type: String,
+        default: "default.png"
       },
       desc: {
         type: String,
@@ -18,6 +19,7 @@ const BlogCategorySchema = new mongoose.Schema({
       parentId: {
         type: mongoose.Types.ObjectId,
         default: null,
+        required: false,
       },
       status: {
         type: Boolean,

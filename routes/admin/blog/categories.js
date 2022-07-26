@@ -1,10 +1,13 @@
 const express = require('express');
-const { create, allCategories, categoryDetails, allCategoriesWithChild } = require('../../../controllers/admin/blog/categories');
+const { allCategories, categoryDetails, allCategoriesWithChild, createCategoryImage, createCategory } = require('../../../controllers/admin/blog/categories');
 
 const router = express.Router();
 
-//create
-router.post('/', create)
+//create with photo
+router.post('/create', createCategoryImage)
+
+//create without photo
+router.post('/', createCategory)
 
 //all categories
 router.get('/', allCategories)

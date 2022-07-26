@@ -4,6 +4,7 @@ const dotenv = require('dotenv')
 const blogCategoryRoute = require('./routes/admin/blog/categories')
 const blogPostRoute = require('./routes/admin/blog/posts')
 const cors = require('cors')
+const fileUpload = require('express-fileupload')
 
 const app = express()
 
@@ -22,6 +23,9 @@ mongoose.connect(process.env.MONGO_URL, {
     console.log('connected to the database')
 })
 
+app.use(fileUpload({
+    useTempFiles: true
+}))
 
 //routes middleware
 app.use('/api/blog/categories', blogCategoryRoute)
@@ -36,7 +40,7 @@ app.use((err, req, res, next)=>{
         success: false,
         status: errorStatus,
         message: errorMessage,
-        stack: err.stack
+        //stack: err.stack
     })
 })
 

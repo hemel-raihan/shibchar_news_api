@@ -2,15 +2,58 @@
 const BlogCategory = require("../../../models/admin/blog/BlogCategory");
 const createError = require("../../../utils/error");
 const slugify = require('slugify');
+const cloudinary = require('cloudinary').v2;
 
-//create  
-const create = async (req, res, next)=>{
+cloudinary.config({ 
+    cloud_name: 'datahostbd', 
+    api_key: '121831422939177', 
+    api_secret: 'C2U2pgJ8_a7mOzk6y2vyN_Fid9w',
+  });
+
+//create with photo 
+const createCategoryImage = async (req, res, next)=>{
+
+    const slug = slugify(req.body.name);
+    const file = req.files.file;
+    cloudinary.uploader.upload(file.tempFilePath, async (err, result) =>{
+        const newCategory = new BlogCategory({
+            name: req.body.name,
+            slug: slug,
+            desc: req.body.desc,
+            parentId: req.body.parentId,
+            photo: result.url,
+        });
+
+        try{
+            await newCategory.save()
+
+            if(req.body.parentId != null){
+                try{
+                    await BlogCategory.findByIdAndUpdate(req.body.parentId, {
+                        $push: {childs: newCategory._id},
+                    })
+                }
+                catch(err){
+                    next(err)
+                }
+            }
+            
+            res.status(200).json('Blog Category has been created');
+        }
+        catch(err){
+            next(err)
+        }
+    })
+    
+}
+
+//create  withous photo
+const createCategory = async (req, res, next)=>{
     try{  
         const slug = slugify(req.body.name);
         const newCategory = new BlogCategory({
             name: req.body.name,
             slug: slug,
-            photo: req.body.photo,
             desc: req.body.desc,
             parentId: req.body.parentId,
         })
@@ -93,7 +136,8 @@ const categoryDetails = async (req, res, next)=>{
 }
 
 module.exports = {
-    create,
+    createCategoryImage,
+    createCategory,
     allCategories,
     allCategoriesWithChild,
     categoryDetails
