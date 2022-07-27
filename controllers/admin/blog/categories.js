@@ -47,7 +47,7 @@ const createCategoryImage = async (req, res, next)=>{
     
 }
 
-//create  withous photo
+//create  without photo
 const createCategory = async (req, res, next)=>{
     try{  
         const slug = slugify(req.body.name);
@@ -72,6 +72,103 @@ const createCategory = async (req, res, next)=>{
         }
         
         res.status(200).json('Blog Category has been created');
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+//update with photo
+const updateCategoryImage = async (req, res, next)=>{
+    const slug = slugify(req.body.name);
+    if(req.body.imageName == null)
+    {
+        const body = {
+            name: req.body.name,
+            slug: slug,
+            desc: req.body.desc,
+            parentId: req.body.parentId
+        }
+    
+        try{
+            const updatedCategory = await BlogCategory.findByIdAndUpdate(req.params.id, {$set: body}, {new:true})
+    
+            if(req.body.parentId != null){
+                try{
+                    await BlogCategory.findByIdAndUpdate(req.body.parentId, {
+                        $push: {childs: updatedCategory._id},
+                    })
+                }
+                catch(err){
+                    next(err)
+                }
+            }
+            
+            res.status(200).json('Blog Category has been Updated');
+        }
+        catch(err){
+            next(err)
+        }
+    }
+    else{
+        const file = req.files.file;
+        cloudinary.uploader.upload(file.tempFilePath, async (err, result) =>{
+            const body = {
+                name: req.body.name,
+                slug: slug,
+                desc: req.body.desc,
+                parentId: req.body.parentId,
+                photo: result.url,
+            }
+            try{
+                const updatedCategory = await BlogCategory.findByIdAndUpdate(req.params.id, {$set: body}, {new:true})
+
+                if(req.body.parentId != null){
+                    try{
+                        await BlogCategory.findByIdAndUpdate(req.body.parentId, {
+                            $push: {childs: updatedCategory._id},
+                        })
+                    }
+                    catch(err){
+                        next(err)
+                    }
+                }
+                
+                res.status(200).json('Blog Category has been Updated');
+            }
+            catch(err){
+                next(err)
+            }
+        })
+    }
+    
+}
+
+//update without photo
+const updateCategory = async (req, res, next)=>{
+    const slug = slugify(req.body.name);
+    const body = {
+        name: req.body.name,
+        slug: slug,
+        desc: req.body.desc,
+        parentId: req.body.parentId
+    }
+
+    try{
+        const updatedCategory = await BlogCategory.findByIdAndUpdate(req.params.id, {$set: body}, {new:true})
+
+        if(req.body.parentId != null){
+            try{
+                await BlogCategory.findByIdAndUpdate(req.body.parentId, {
+                    $push: {childs: updatedCategory._id},
+                })
+            }
+            catch(err){
+                next(err)
+            }
+        }
+        
+        res.status(200).json('Blog Category has been Updated');
     }
     catch(err){
         next(err)
@@ -127,8 +224,35 @@ const allCategoriesWithChild = async (req, res, next)=>{
 //details
 const categoryDetails = async (req, res, next)=>{
     try{
-        const room = await BlogCategory.findById(req.params.id)
-        res.status(200).json(room);
+        const category = await BlogCategory.findById(req.params.id)
+        res.status(200).json(category);
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+//delete  
+const deleteCategory = async (req, res, next)=>{
+    const parentId = req.params.parentId;
+    try{
+        const category = await BlogCategory.findById(req.params.id)
+        if(category.childs.length != 0 ){
+            return next(createError(501, 'Can not delete this item. This category has childs item'))
+        }
+        else{
+            await BlogCategory.findByIdAndDelete(req.params.id)
+            try{
+                await BlogCategory.findByIdAndUpdate(parentId, {
+                    $pull: {childs: req.params.id},
+                })
+            }
+            catch(err){
+                next(err)
+            }
+            res.status(200).json('Category has been deleted');
+        }
+        
     }
     catch(err){
         next(err)
@@ -140,5 +264,8 @@ module.exports = {
     createCategory,
     allCategories,
     allCategoriesWithChild,
-    categoryDetails
+    categoryDetails,
+    deleteCategory,
+    updateCategoryImage,
+    updateCategory
 }
