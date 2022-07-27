@@ -10,7 +10,7 @@ router.post('/create', createCategoryImage)
 router.post('/', createCategory)
 
 //Category edit with photo
-router.put('/update/:id', updateCategoryImage)
+router.put('/update/:id/:parentId', updateCategoryImage)
 
 //Category edit without photo
 router.put('/:id', updateCategory)

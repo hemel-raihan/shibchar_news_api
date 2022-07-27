@@ -80,6 +80,7 @@ const createCategory = async (req, res, next)=>{
 
 //update with photo
 const updateCategoryImage = async (req, res, next)=>{
+    const parentId = req.params.parentId;
     const slug = slugify(req.body.name);
     if(req.body.imageName == null)
     {
@@ -95,6 +96,9 @@ const updateCategoryImage = async (req, res, next)=>{
     
             if(req.body.parentId != null){
                 try{
+                    await BlogCategory.findByIdAndUpdate(parentId, {
+                        $pull: {childs: req.params.id},
+                    })
                     await BlogCategory.findByIdAndUpdate(req.body.parentId, {
                         $push: {childs: updatedCategory._id},
                     })
