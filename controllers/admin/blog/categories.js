@@ -2,6 +2,7 @@
 const BlogCategory = require("../../../models/admin/blog/BlogCategory");
 const createError = require("../../../utils/error");
 const slugify = require('slugify');
+const { request } = require("express");
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({ 
@@ -182,8 +183,28 @@ const updateCategory = async (req, res, next)=>{
 //all categories 
 const allCategories = async (req, res, next)=>{
     try{
+        //number of records want to show per page
+        var perPage = 5;
+        //total number of records from database
+        var total = await BlogCategory.count();
+        //Calculating number of pagination links required
+        var pages = Math.ceil(total/perPage);
+        //get current page number
+        var pageNumber = (req.query.page == null) ? 1 : req.query.page;
+        //get records to skip
+        var startFrom = (pageNumber - 1)*perPage;
+
         const categories = await BlogCategory.find({status: true})
-        res.status(200).json(categories);
+                           .sort({"_id": -1})
+                           .skip(startFrom)
+                           .limit(perPage)
+        res.status(200).json({
+            "pages": pages,
+            "currentPage": pageNumber,
+            "perPage": perPage,
+            "total": total,
+            "data": categories
+        });
     }
     catch(err){
         next(err)
