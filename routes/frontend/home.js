@@ -1,5 +1,5 @@
 const express = require('express');
-const { allCategoriesWithChild, allCategoriesPosts, postDetails } = require('../../controllers/frontend/home');
+const { allCategoriesWithChild, allCategoriesPosts, postDetails, categoryDetails } = require('../../controllers/frontend/home');
 const router = express.Router();
 
 
@@ -9,8 +9,11 @@ router.get('/categories', allCategoriesWithChild)
 //all categories with posts
 router.get('/categories/posts', allCategoriesPosts)
 
+//category details
+router.get('/category/:id', categoryDetails)
+
 //post details
-router.get('/post/:id', postDetails)
+router.get('/post/:slug', postDetails)
 
 
 module.exports = router

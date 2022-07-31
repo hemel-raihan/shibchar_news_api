@@ -30,7 +30,7 @@ const allCategoriesWithChild = async (req, res, next)=>{
 //details
 const categoryDetails = async (req, res, next)=>{
     try{
-        const category = await BlogCategory.findById(req.params.id)
+        const category = await BlogCategory.findById(req.params.id).populate('posts')
         res.status(200).json(category);
     }
     catch(err){
@@ -56,7 +56,15 @@ const allCategoriesPosts = async (req, res, next)=>{
 //post details
 const postDetails = async (req, res, next)=>{
     try{
-        const post = await BlogPost.findById(req.params.id)
+        const post = await BlogPost.find({slug: req.params.slug}).populate({
+            path: 'category',
+            populate: {
+                path: 'posts',
+                populate:{
+                    path: 'category',
+                }
+            }
+        })
         res.status(200).json(post);
     }
     catch(err){
