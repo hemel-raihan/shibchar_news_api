@@ -1,8 +1,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
+
+//backend
 const blogCategoryRoute = require('./routes/admin/blog/categories')
 const blogPostRoute = require('./routes/admin/blog/posts')
+
+//frontend
+const homeRoute = require('./routes/frontend/home')
+
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
 
@@ -27,10 +33,12 @@ app.use(fileUpload({
     useTempFiles: true
 }))
 
-//routes middleware
+//routes backend middleware
 app.use('/api/blog/categories', blogCategoryRoute)
 app.use('/api/blog/posts', blogPostRoute)
 
+//routes frontend middleware
+app.use('/api/home', homeRoute)
 
 //error handler middleware
 app.use((err, req, res, next)=>{

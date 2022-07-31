@@ -11,6 +11,7 @@ const BlogPostSchema = new mongoose.Schema({
       },
       photo: {
         type: String,
+        default: "default.png"
       },
       desc: {
         type: String,

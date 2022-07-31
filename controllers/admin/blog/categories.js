@@ -19,7 +19,7 @@ const createCategoryImage = async (req, res, next)=>{
     cloudinary.uploader.upload(file.tempFilePath, async (err, result) =>{
         const newCategory = new BlogCategory({
             name: req.body.name,
-            slug: slug,
+            slug: req.body.slug,
             desc: req.body.desc,
             parentId: req.body.parentId,
             photo: result.url,
@@ -50,11 +50,10 @@ const createCategoryImage = async (req, res, next)=>{
 
 //create  without photo
 const createCategory = async (req, res, next)=>{
-    try{  
-        const slug = slugify(req.body.name);
+    try{ 
         const newCategory = new BlogCategory({
             name: req.body.name,
-            slug: slug,
+            slug: req.body.slug,
             desc: req.body.desc,
             parentId: req.body.parentId,
         })
@@ -71,6 +70,7 @@ const createCategory = async (req, res, next)=>{
                 next(err)
             }
         }
+
         
         res.status(200).json('Blog Category has been created');
     }
@@ -82,12 +82,11 @@ const createCategory = async (req, res, next)=>{
 //update with photo
 const updateCategoryImage = async (req, res, next)=>{
     const parentId = req.params.parentId;
-    const slug = slugify(req.body.name);
     if(req.body.imageName == null)
     {
         const body = {
             name: req.body.name,
-            slug: slug,
+            slug: req.body.slug,
             desc: req.body.desc,
             parentId: req.body.parentId
         }
@@ -120,7 +119,7 @@ const updateCategoryImage = async (req, res, next)=>{
         cloudinary.uploader.upload(file.tempFilePath, async (err, result) =>{
             const body = {
                 name: req.body.name,
-                slug: slug,
+                slug: req.body.slug,
                 desc: req.body.desc,
                 parentId: req.body.parentId,
                 photo: result.url,
