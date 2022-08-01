@@ -213,19 +213,6 @@ const allCategories = async (req, res, next)=>{
 //all categories with child  
 const allCategoriesWithChild = async (req, res, next)=>{
     try{
-        // const populateObj = {
-        //     path: "childs",
-
-        //     populate: {
-        //         path: "childs",
-        //         populate:{
-        //             path: "childs",
-        //             populate:{
-        //                 path: "childs"
-        //             }
-        //         }
-        //     },
-        //    };
         const categories = await BlogCategory.find({parentId: null}).populate({
             path: 'childs',
             populate: {
@@ -239,6 +226,7 @@ const allCategoriesWithChild = async (req, res, next)=>{
             }
         }).populate('posts')
         res.status(200).json(categories);
+        
     }
     catch(err){
         next(err)

@@ -72,9 +72,21 @@ const postDetails = async (req, res, next)=>{
     }
 }
 
+//all posts by category
+const AllPostByCategory = async (req, res, next)=>{
+    try{
+        const post = await BlogCategory.findOne({slug: req.params.slug}).populate('posts')
+        res.status(200).json(post);
+    }
+    catch(err){
+        next(err)
+    }
+}
+
 module.exports = {
     allCategoriesWithChild,
     categoryDetails,
     allCategoriesPosts,
     postDetails,
+    AllPostByCategory
 }
