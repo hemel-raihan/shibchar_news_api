@@ -5,6 +5,7 @@ const dotenv = require('dotenv')
 //backend
 const blogCategoryRoute = require('./routes/admin/blog/categories')
 const blogPostRoute = require('./routes/admin/blog/posts')
+const authRoute = require('./routes/admin/auth')
 
 //frontend
 const homeRoute = require('./routes/frontend/home')
@@ -36,6 +37,7 @@ app.use(fileUpload({
 //routes backend middleware
 app.use('/api/blog/categories', blogCategoryRoute)
 app.use('/api/blog/posts', blogPostRoute)
+app.use('/api/auth', authRoute)
 
 //routes frontend middleware
 app.use('/api/home', homeRoute)
